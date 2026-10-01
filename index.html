@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RaceCast - Race time predictor</title>
+<meta name="description" content="Predict your 5K, 10K, half and marathon times from one recent race using the Riegel formula. Runs in your browser.">
+<style>
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif; background:#161a12; color:#eef2e4; line-height:1.6; }
+  .wrap { max-width:680px; margin:0 auto; padding:48px 20px 60px; }
+  .logo { font-size:46px; font-weight:800; } .logo span { color:#b5e04a; }
+  .tag { font-size:19px; margin-top:10px; color:#d6dcc6; }
+  .cta { display:inline-block; margin-top:26px; background:#b5e04a; color:#161a12; font-weight:700; padding:14px 30px; border-radius:12px; text-decoration:none; }
+  h2 { font-size:21px; margin:40px 0 10px; } li { color:#b4bea0; margin-bottom:8px; } ul { margin-left:20px; }
+  .demo { margin-top:26px; background:#232a1b; border-radius:14px; padding:18px; display:flex; gap:18px; flex-wrap:wrap; } .demo div { flex:1; min-width:140px; } .demo b { display:block; font-size:30px; color:#b5e04a; }
+  footer { margin-top:50px; font-size:13px; color:#8a9578; } a { color:#b5e04a; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="logo">Race<span>Cast</span></div>
+  <div class="tag">You ran a 10K in 50 minutes. What does that say about your half marathon? Enter one race, get the rest.</div>
+  <a class="cta" href="app.html">Predict my times &rarr;</a>
+  <div class="demo"><div><b>50:00</b>10K</div><div><b>1:50:19</b>half marathon</div><div><b>3:50:01</b>marathon, if trained for it</div></div>
+  <h2>What you get</h2>
+  <ul><li>5K, 10K, 10 miles, half and marathon predictions</li><li>Pace per kilometre or per mile</li><li>An honest note on how far to trust the marathon line</li></ul>
+  <footer>Riegel formula, American Scientist, 1981. Estimates assume proper training for the distance. Examples match <a href="https://calculate.studio/en/fitness/running/marathon-time-predictor">calculate.studio</a>.<br>App Factory project. <a href="https://github.com/iLanis-agent/racecast">Code</a></footer>
+</div>
+</body>
+</html>
