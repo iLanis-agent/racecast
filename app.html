@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RaceCast - Race time predictor</title>
+<style>
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif; background:#161a12; color:#eef2e4; line-height:1.5; }
+  .wrap { max-width:640px; margin:0 auto; padding:26px 18px 60px; }
+  a { color:#b5e04a; } h1 { font-size:28px; } h1 span { color:#b5e04a; } .sub { color:#a8b394; margin:4px 0 18px; }
+  .card { background:#232a1b; border-radius:14px; padding:16px; margin-bottom:14px; }
+  label { display:block; font-size:13px; color:#a8b394; margin:10px 0 4px; }
+  input, select { width:100%; padding:11px; border-radius:9px; border:1px solid #3d4930; background:#161a12; color:#eef2e4; font-size:16px; }
+  .row { display:flex; gap:10px; } .row > div { flex:1; }
+  .seg { display:flex; gap:8px; margin-top:10px; } .seg button { flex:1; padding:10px; border-radius:9px; border:1px solid #3d4930; background:#161a12; color:#a8b394; font-size:14px; cursor:pointer; } .seg button.on { background:#b5e04a; color:#161a12; font-weight:700; border-color:#b5e04a; }
+  table { width:100%; border-collapse:collapse; font-size:15px; } td, th { padding:8px 4px; border-bottom:1px solid #313b26; text-align:left; } th { color:#a8b394; font-weight:600; font-size:13px; } td.t { font-weight:800; color:#b5e04a; font-size:18px; } tr.src td { color:#a8b394; font-style:italic; }
+  h2 { font-size:17px; margin-bottom:8px; } .small { font-size:13px; color:#a8b394; }
+  .warn { background:#3d2a20; border:1px solid #b9703f; color:#ffddc4; padding:12px; border-radius:10px; margin-top:12px; font-size:14px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Race<span>Cast</span></h1>
+  <div class="sub">Give one recent race. Get what you could run at other distances.</div>
+  <div class="card">
+    <div class="row"><div><label for="d">Race you ran</label><select id="d"><option value="5k">5K</option><option value="10k" selected>10K</option><option value="10mi">10 miles</option><option value="half">Half marathon</option><option value="full">Marathon</option></select></div><div><label for="t">Finish time (h:mm:ss or mm:ss)</label><input id="t" type="text" value="50:00" inputmode="numeric"></div></div>
+    <div class="seg" id="u"><button data-v="km" class="on">min / km</button><button data-v="mi">min / mile</button></div>
+  </div>
+  <div class="card"><h2>Predicted times</h2><table id="tbl"></table><div id="msg"></div></div>
+  <div class="card"><h2>About this</h2><div class="small">Uses Peter Riegel's 1981 endurance formula, T2 = T1 &times; (D2 / D1)<sup>1.06</sup> (American Scientist). It assumes you train properly for the target distance. A fast 5K does not mean you can run a marathon that pace without long runs, and predictions to the marathon from a short race tend to come out optimistic. Use a race from the last 4 to 8 weeks, on similar terrain. Table values match the published <a href="https://calculate.studio/en/fitness/running/marathon-time-predictor">calculate.studio</a> examples (10K in 50:00 gives a 3:50:01 marathon). <a href="index.html">About</a></div></div>
+</div>
+<script src="engine.js"></script>
+<script>
+var $ = function (i) { return document.getElementById(i); }, unit = 'km';
+Array.prototype.forEach.call($('u').querySelectorAll('button'), function (b) { b.onclick = function () { Array.prototype.forEach.call($('u').querySelectorAll('button'), function (x) { x.className = ''; }); b.className = 'on'; unit = b.getAttribute('data-v'); render(); }; });
+function render() {
+  var t = Race.parse($('t').value), key = $('d').value, d1 = Race.KM[key];
+  if (t == null) { $('tbl').innerHTML = ''; $('msg').innerHTML = '<div class="warn">Enter a time like 50:00 or 1:45:30.</div>'; return; }
+  $('msg').innerHTML = '';
+  var h = '<tr><th>Distance</th><th>Time</th><th>Pace / ' + (unit === 'mi' ? 'mile' : 'km') + '</th></tr>';
+  Object.keys(Race.KM).forEach(function (k) { var d2 = Race.KM[k], s = k === key ? t : Race.predict(t, d1, d2); h += '<tr' + (k === key ? ' class="src"' : '') + ' id="r-' + k + '"><td>' + Race.NAMES[k] + (k === key ? ' (your race)' : '') + '</td><td class="t">' + Race.fmt(s) + '</td><td>' + Race.fmt(Race.pace(s, d2, unit === 'mi')) + '</td></tr>'; });
+  $('tbl').innerHTML = h;
+  if (key === '5k' || key === '10k') $('msg').innerHTML = '<div class="small" style="margin-top:10px">Marathon from a ' + Race.NAMES[key] + ' is the least reliable line here. Long runs matter more than race speed.</div>';
+}
+$('d').onchange = render; $('t').oninput = render;
+render();
+</script>
+</body>
+</html>
